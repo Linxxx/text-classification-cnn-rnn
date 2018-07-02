@@ -1,10 +1,11 @@
 # coding: utf-8
-
+import os
 import sys
 from collections import Counter
 
 import numpy as np
 import tensorflow.contrib.keras as kr
+import random
 
 if sys.version_info[0] > 2:
     is_py3 = True
@@ -35,7 +36,7 @@ def open_file(filename, mode='r'):
     mode: 'r' or 'w' for read or write
     """
     if is_py3:
-        return open(filename, mode, encoding='utf-8', errors='ignore')
+        return open(filename, mode, encoding='gbk', errors='ignore')
     else:
         return open(filename, mode)
 
@@ -44,21 +45,34 @@ def read_file(filename):
     """读取文件数据"""
     contents, labels = [], []
     with open_file(filename) as f:
+        flag = ''
         for line in f:
             try:
-                label, content = line.strip().split('\t')
-                if content:
-                    contents.append(list(native_content(content)))
-                    labels.append(native_content(label))
+                if line != None:
+                    if len(line) <12:
+                        flag = line;
+                    else:
+                        label = flag
+                        content = line.strip().split(' ')
+                    if content:
+                        contents.extend(list(native_content(content)))
+                        i = 1
+                        while i <= len(content):
+                            labels.append(native_content(label.strip()))
+                            i = i + 1
+                else:
+                    break
             except:
                 pass
+        comb = list(zip(contents,labels))
+        random.shuffle(comb)
+        contents[:],labels[:] = zip(*comb)   #将contents和labels按相同顺序打乱
     return contents, labels
 
 
-def build_vocab(train_dir, vocab_dir, vocab_size=5000):
+def build_vocab(train_dir, vocab_dir, vocab_size=209):
     """根据训练集构建词汇表，存储"""
     data_train, _ = read_file(train_dir)
-
     all_data = []
     for content in data_train:
         all_data.extend(content)
@@ -68,7 +82,7 @@ def build_vocab(train_dir, vocab_dir, vocab_size=5000):
     words, _ = list(zip(*count_pairs))
     # 添加一个 <PAD> 来将所有文本pad为同一长度
     words = ['<PAD>'] + list(words)
-    open_file(vocab_dir, mode='w').write('\n'.join(words) + '\n')
+    open_file(vocab_dir, mode='w').write('\n'.join(words))
 
 
 def read_vocab(vocab_dir):
@@ -78,12 +92,13 @@ def read_vocab(vocab_dir):
         # 如果是py2 则每个值都转化为unicode
         words = [native_content(_.strip()) for _ in fp.readlines()]
     word_to_id = dict(zip(words, range(len(words))))
+    print(word_to_id)
     return words, word_to_id
 
 
 def read_category():
     """读取分类目录，固定"""
-    categories = ['体育', '财经', '房产', '家居', '教育', '科技', '时尚', '时政', '游戏', '娱乐']
+    categories = ['分数线', '食堂', '宿舍', '官网', '英文名', '专业', '学院', '收费', '地址', '邮编', '占地', '邮箱', '招办电话', '学校性质', '硕士点', '博士点', '校庆日', '知名校友', '就业情况', '创办时间', '学校代码', '师资力量', '学术资源', '科研成果']
 
     categories = [native_content(x) for x in categories]
 
@@ -126,3 +141,10 @@ def batch_iter(x, y, batch_size=64):
         start_id = i * batch_size
         end_id = min((i + 1) * batch_size, data_len)
         yield x_shuffle[start_id:end_id], y_shuffle[start_id:end_id]
+
+base_dir = os.path.dirname(os.path.abspath('__file__'))
+train_dir = os.path.join(base_dir, 'train.txt')
+test_dir = os.path.join(base_dir, 'test.txt')
+vocab_dir = os.path.join(base_dir, 'vocab.txt')
+if __name__ == '__main__':
+    read_vocab(vocab_dir)

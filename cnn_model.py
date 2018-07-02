@@ -6,22 +6,24 @@ import tensorflow as tf
 class TCNNConfig(object):
     """CNN配置参数"""
 
-    embedding_dim = 64  # 词向量维度
-    seq_length = 600  # 序列长度
-    num_classes = 10  # 类别数
-    num_filters = 256  # 卷积核数目
-    kernel_size = 5  # 卷积核尺寸
-    vocab_size = 5000  # 词汇表达小
+    embedding_dim = 203  # 词向量维度
+    seq_length = 40  # 序列长度
+    num_classes = 24  # 类别数
+    num_filters = 3  # 卷积核数目
+    kernel_size1 = 3  # 卷积核尺
+    kernel_size2 = 4  # 卷积核尺寸
+    kernel_size3 = 5  # 卷积核尺寸
+    vocab_size = 203  # 词汇表达小
 
     hidden_dim = 128  # 全连接层神经元
 
     dropout_keep_prob = 0.5  # dropout保留比例
-    learning_rate = 1e-3  # 学习率
+    learning_rate = 0.01  # 学习率
 
     batch_size = 64  # 每批训练大小
-    num_epochs = 10  # 总迭代轮次
+    num_epochs = 200  # 总迭代轮次
 
-    print_per_batch = 100  # 每多少轮输出一次结果
+    print_per_batch = 200  # 每多少轮输出一次结果
     save_per_batch = 10  # 每多少轮存入tensorboard
 
 
@@ -47,9 +49,12 @@ class TextCNN(object):
 
         with tf.name_scope("cnn"):
             # CNN layer
-            conv = tf.layers.conv1d(embedding_inputs, self.config.num_filters, self.config.kernel_size, name='conv')
+            conv1 = tf.layers.conv1d(embedding_inputs, self.config.num_filters, self.config.kernel_size1, name='conv1')
+            conv2 = tf.layers.conv1d(conv1, self.config.num_filters, self.config.kernel_size2, name = 'conv2')
+            conv3 = tf.layers.conv1d(conv2, self.config.num_filters, self.config.kernel_size3, name = 'conv3')
             # global max pooling layer
-            gmp = tf.reduce_max(conv, reduction_indices=[1], name='gmp')
+            gmp = tf.reduce_max(conv3, reduction_indices=[1], name='gmp')
+
 
         with tf.name_scope("score"):
             # 全连接层，后面接dropout以及relu激活
