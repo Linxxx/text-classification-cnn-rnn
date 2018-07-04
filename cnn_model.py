@@ -9,16 +9,16 @@ class TCNNConfig(object):
     embedding_dim = 203  # 词向量维度
     seq_length = 40  # 序列长度
     num_classes = 24  # 类别数
-    num_filters = 5  # 卷积核数目
+    num_filters = 4  # 卷积核数目
     kernel_size1 = 3  # 卷积核尺
     kernel_size2 = 4  # 卷积核尺寸
     kernel_size3 = 5  # 卷积核尺寸
     vocab_size = 203  # 词汇表达小
 
-    hidden_dim = 128  # 全连接层神经元
+    hidden_dim = 256 # 全连接层神经元
 
     dropout_keep_prob = 0.5  # dropout保留比例
-    learning_rate = 1e-3  # 学习率
+    learning_rate = 0.01  # 学习率
 
     batch_size = 32  # 每批训练大小
     num_epochs = 200  # 总迭代轮次
