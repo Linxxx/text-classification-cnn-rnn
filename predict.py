@@ -50,9 +50,9 @@ class CnnModel:
 
 if __name__ == '__main__':
     cnn_model = CnnModel()
-    test_demo = ['上海海事大学食堂饭菜好吃吗',
-                 '上海海事大学宿舍大不大',
-                 '上海海事大学科研成果有哪些',
-                 '上海海事大学学费怎么样']
+    test_demo = ['上海海事大学的学术资源',
+                 '上海师范大学食堂怎么样',
+                 '上海交通大学的食堂饭菜好吃吗',
+                 '上海同济大学有哪些知名校友']
     for i in test_demo:
         print(cnn_model.predict(i))
