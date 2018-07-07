@@ -90,7 +90,6 @@ def read_vocab(vocab_dir):
         # 如果是py2 则每个值都转化为unicode
         words = [native_content(_.strip()) for _ in fp.readlines()]
     word_to_id = dict(zip(words, range(len(words))))
-    print(len(word_to_id),word_to_id)
     return words, word_to_id
 
 
@@ -140,9 +139,8 @@ def batch_iter(x, y, batch_size=64):
         end_id = min((i + 1) * batch_size, data_len)
         yield x_shuffle[start_id:end_id], y_shuffle[start_id:end_id]
 
-base_dir = os.path.dirname(os.path.abspath('__file__'))
-train_dir = os.path.join(base_dir, 'train.txt')
-test_dir = os.path.join(base_dir, 'test.txt')
-vocab_dir = os.path.join(base_dir, 'vocab.txt')
-if __name__ == '__main__':
-    read_vocab(vocab_dir)
+# base_dir = os.path.dirname(os.path.abspath('__file__'))
+# train_dir = os.path.join(base_dir, 'train.txt')
+# test_dir = os.path.join(base_dir, 'test.txt')
+# vocab_dir = os.path.join(base_dir, 'vocab.txt')
+#

@@ -8,6 +8,7 @@ import tensorflow.contrib.keras as kr
 
 from cnn_model import TCNNConfig, TextCNN
 from data.cnews_loader import read_category, read_vocab
+from socket import socket, AF_INET, SOCK_STREAM
 
 try:
     bool(type(unicode))
@@ -49,10 +50,20 @@ class CnnModel:
 
 
 if __name__ == '__main__':
+    sock = socket(AF_INET, SOCK_STREAM)
+    sock.bind(('127.0.0.1', 50009))
+    sock.listen(5)
     cnn_model = CnnModel()
-    test_demo = ['上海海事大学的校庆日是什么时候',
-                 '上海师范大学的收费情况如何',
-                 '上海交通大学的师资力量如何',
-                 '上海同济大学的博士点有哪些']
-    for i in test_demo:
-        print(cnn_model.predict(i))
+    while True:
+        try:
+            conn,addr = sock.accept()
+            content = conn.recv(4096)
+            content = content.decode("utf-8")
+            print(content)
+            reply = cnn_model.predict(content)
+            print(reply)
+            reply = reply.encode("utf-8")
+            conn.send(reply)
+        except Exception as ex:
+            print(ex)
+            continue
