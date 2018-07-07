@@ -70,7 +70,7 @@ def read_file(filename):
     return contents, labels
 
 
-def build_vocab(train_dir, vocab_dir, vocab_size=209):
+def build_vocab(train_dir, vocab_dir, vocab_size=230):
     """根据训练集构建词汇表，存储"""
     data_train, _ = read_file(train_dir)
     all_data = []
@@ -80,8 +80,6 @@ def build_vocab(train_dir, vocab_dir, vocab_size=209):
     counter = Counter(all_data)
     count_pairs = counter.most_common(vocab_size - 1)
     words, _ = list(zip(*count_pairs))
-    # 添加一个 <PAD> 来将所有文本pad为同一长度
-    words = ['<PAD>'] + list(words)
     open_file(vocab_dir, mode='w').write('\n'.join(words))
 
 
@@ -92,7 +90,7 @@ def read_vocab(vocab_dir):
         # 如果是py2 则每个值都转化为unicode
         words = [native_content(_.strip()) for _ in fp.readlines()]
     word_to_id = dict(zip(words, range(len(words))))
-    print(word_to_id)
+    print(len(word_to_id),word_to_id)
     return words, word_to_id
 
 
