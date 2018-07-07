@@ -1,6 +1,4 @@
 .DS_Store
-data/cnews
-data/thucnews
 __pycache__
 cnn_keras.py
 .idea
@@ -11,3 +9,4 @@ tensorboard
 images
 run_rnn.py
 rnn_model.py
+.git
